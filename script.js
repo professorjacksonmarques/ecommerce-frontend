@@ -1,14 +1,19 @@
 fetch('https://ecommerce-backend-us6o.onrender.com/api/products')
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) throw new Error('Falha ao buscar produtos: ' + res.status);
+    return res.json();
+  })
   .then(products => {
     const list = document.getElementById('product-list');
-    products.forEach(product => {
+    if (!list) return; // evita erro caso elemento não exista nesta página
+
+    products.forEach(p => {
       const div = document.createElement('div');
       div.className = 'product';
       div.innerHTML = `
-        <strong>${product.name}</strong><br>
-        R$ ${product.price.toFixed(2)}<br>
-        Estoque: ${product.stock}
+        <strong>${p.nome}</strong><br>
+        R$ ${Number(p.preco).toFixed(2)}<br>
+        ${p.descricao ? `Descrição: ${p.descricao}` : ''}
       `;
       list.appendChild(div);
     });
