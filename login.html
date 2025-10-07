@@ -7,27 +7,39 @@
 <body>
   <h1>Login</h1>
   <form id="login-form">
-    <input type="text" id="username" placeholder="Usuário" required />
-    <input type="password" id="password" placeholder="Senha" required />
-    <button type="submit">Entrar</button>
-  </form>
-  <p id="login-message"></p>
+  <input id="username" name="username" placeholder="Usuário" required />
+  <input id="password" name="password" type="password" placeholder="Senha" required />
+  <button type="submit">Entrar</button>
+</form>
 
-  <script>
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+<div id="msg"></div>
 
-      const response = await fetch('https://ecommerce-backend-us6o.onrender.com/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
+<script>
+const API = 'https://ecommerce-backend-us6o.onrender.com';
 
-      const data = await response.json();
-      document.getElementById('login-message').innerText = data.message;
-    });
-  </script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault(); // evita submit tradicional (que envia form-url-encoded)
+
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+
+  const res = await fetch(`${API}/api/login`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+  const msg = document.getElementById('msg');
+
+  if (res.ok) {
+    msg.textContent = data.message || 'Login successful';
+    // exemplo: salvar token no futuro -> localStorage.setItem('token', data.token)
+    // location.href = 'admin.html';
+  } else {
+    msg.textContent = data.message || 'Invalid credentials';
+  }
+});
+</script>
 </body>
 </html>
