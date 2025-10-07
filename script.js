@@ -1,4 +1,4 @@
-fetch('https://SEU_BACKEND_URL/api/products')
+fetch('https://ecommerce-backend-us6o.onrender.com/api/products')
   .then(res => res.json())
   .then(products => {
     const list = document.getElementById('product-list');
