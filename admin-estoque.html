@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin - Estoque</title>
+  <style>
+    .item { border: 1px solid #ccc; padding: 8px; margin: 6px; }
+    .row { display: flex; gap: 8px; align-items: center; }
+  </style>
+</head>
+<body>
+  <h1>Estoque</h1>
+  <div id="list"></div>
+
+  <script>
+  const API = 'https://ecommerce-backend-us6o.onrender.com';
+
+  async function carregar() {
+    const res = await fetch(`${API}/api/products`);
+    const produtos = await res.json();
+    const list = document.getElementById('list');
+    list.innerHTML = '';
+    produtos.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.innerHTML = `
+        <div class="row">
+          <div><strong>#${p.id} - ${p.nome}</strong></div>
+          <div>Preço: R$ ${Number(p.preco).toFixed(2)}</div>
+        </div>
+        <div class="row">
+          <label>Estoque: </label>
+          <input type="number" id="qtd-${p.id}" value="${p.estoque}" min="0" style="width: 80px;" />
+          <button onclick="atualizar(${p.id})">Salvar</button>
+        </div>
+        <div id="msg-${p.id}" style="color: green;"></div>
+      `;
+      list.appendChild(el);
+    });
+  }
+
+  async function atualizar(id) {
+    const qtd = Number(document.getElementById(`qtd-${id}`).value);
+    const res = await fetch(`${API}/api/estoque/${id}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ estoque: qtd })
+    });
+    const data = await res.json();
+    const msg = document.getElementById(`msg-${id}`);
+    if (res.ok) {
+      msg.textContent = 'Estoque atualizado!';
+      setTimeout(()=> msg.textContent='', 1500);
+    } else {
+      msg.style.color = 'red';
+      msg.textContent = data.erro || 'Falha ao atualizar';
+    }
+  }
+
+  carregar();
+  </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ fetch('https://ecommerce-backend-us6o.onrender.com/api/products')
   })
   .then(products => {
     const list = document.getElementById('product-list');
-    if (!list) return; // evita erro caso elemento não exista nesta página
+    if (!list) return;
 
     products.forEach(p => {
       const div = document.createElement('div');
@@ -13,7 +13,7 @@ fetch('https://ecommerce-backend-us6o.onrender.com/api/products')
       div.innerHTML = `
         <strong>${p.nome}</strong><br>
         R$ ${Number(p.preco).toFixed(2)}<br>
-        ${p.descricao ? `Descrição: ${p.descricao}` : ''}
+        Estoque: ${p.estoque}
       `;
       list.appendChild(div);
     });
